@@ -1,0 +1,131 @@
+var tetris_array = create_2d_array();
+var curr_shape = [
+  [0, 0],
+  [0, 1],
+  [1, 0],
+  [1, 1],
+];
+var x = 4,
+  y = 0;
+
+let btn_start = document.querySelector("#start");
+btn_start.addEventListener("click", function () {
+  btn_start.innerHTML = "Restart";
+
+  play_game();
+});
+
+function play_game() {
+  draw_shape();
+
+  document.addEventListener("keydown", function (event) {
+    define_arrow(event.keyCode);
+    draw_shape();
+    check_floor();
+  });
+}
+
+function check_floor() {
+  if (y == 18) make_floor();
+}
+
+function make_floor() {
+  tetris_array[curr_shape[0][0] + y][curr_shape[0][1] + x] = 2;
+  tetris_array[curr_shape[1][0] + y][curr_shape[1][1] + x] = 2;
+  tetris_array[curr_shape[2][0] + y][curr_shape[2][1] + x] = 2;
+  tetris_array[curr_shape[3][0] + y][curr_shape[3][1] + x] = 2;
+  x = 4;
+  y = 0;
+  draw_shape();
+}
+
+function draw_shape() {
+  erase_array_value_1();
+  tetris_array[(curr_shape[0][0] += y)][(curr_shape[0][1] += x)] = 1;
+  tetris_array[(curr_shape[1][0] += y)][(curr_shape[1][1] += x)] = 1;
+  tetris_array[(curr_shape[2][0] += y)][(curr_shape[2][1] += x)] = 1;
+  tetris_array[(curr_shape[3][0] += y)][(curr_shape[3][1] += x)] = 1;
+
+  draw_table(tetris_array);
+}
+
+function erase_array_value_1() {
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 10; j++) {
+      if (tetris_array[i][j] == 1) tetris_array[i][j] = 0;
+    }
+  }
+}
+
+function create_2d_array() {
+  let array = [];
+  for (let i = 0; i < 20; i++) {
+    array[i] = [];
+    for (let j = 0; j < 10; j++) {
+      array[i][j] = 0;
+    }
+  }
+  return array;
+}
+
+function define_arrow(c) {
+  switch (c) {
+    case 37: // left
+      console.log("Left");
+
+      {
+        x = -1;
+        y = 0;
+      }
+      break;
+    case 38: // up
+      console.log("Up");
+      {
+        y = -1;
+        x = 0;
+      }
+      break;
+    case 39: // right
+      console.log("Right");
+      {
+        x = 1;
+        y = 0;
+      }
+      break;
+    case 40: // down
+      console.log("Down");
+      {
+        y = 1;
+        x = 0;
+      }
+      break;
+    case 32: //space
+      console.log("Space");
+      break;
+    case 192: //esc: pause
+      console.log("Esc");
+      break;
+    default:
+      break;
+  }
+  console.log(curr_shape);
+}
+
+function draw_table(array) {
+  console.log(array);
+
+  d = document.getElementById("tetris_table").getElementsByTagName("td");
+  cell = 0;
+  for (let i = 0; i < 20; i++) {
+    for (let j = 0; j < 10; j++) {
+      if (array[i][j] == 1) {
+        d[cell].style.backgroundColor = "yellow";
+      } else if (array[i][j] == 2) {
+        d[cell].style.backgroundColor = "white";
+      } else {
+        d[cell].style.backgroundColor = "gray";
+      }
+      cell++;
+    }
+  }
+}
